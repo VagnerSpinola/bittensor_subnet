@@ -20,6 +20,8 @@
 import time
 import typing
 import bittensor as bt
+import torch
+import hashlib
 
 # Bittensor Miner Template:
 import template
@@ -59,11 +61,11 @@ class Miner(BaseMinerNeuron):
         the miner's intended operation. This method demonstrates a basic transformation of input data.
         """
         nonce = torch.randint(0, 2**32, (1,)).item()
-        data_to_hash = str(nonce) + str(inputs.tolist())
+        data_to_hash = str(nonce) + str(synapse.data.tolist())
         hash_result = hashlib.sha256(data_to_hash.encode()).hexdigest()
 
-        return hash_result, nonce
-        synapse.dummy_output = synapse.dummy_input * 2
+        synapse.hash_output = hash_result
+        synapse.nonce = nonce
         return synapse
 
     async def blacklist(
